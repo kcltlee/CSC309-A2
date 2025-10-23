@@ -28,6 +28,73 @@ enum PromotionType {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String
+  id          Int           @id @default(autoincrement())
+  utorid      String        @unique
+  name        String?
+  password    String        @default("")
+  email       String        @unique
+  birthday    String?
+
+  role        RoleType      @default(regular)
+  verified    Boolean       @default(false)
+  activated   Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  expiresAt   DateTime?
+  resetToken  String?
+  lastLogin   DateTime?
+  avatarUrl   String?
+
+  points            Int             @default(0)
+  transactions      Transaction[]   @relation("UserTransactions")
+  transactionsMade  Transaction[]   @relation("TransactionsMade")
+  promotions        Promotion[]
+  suspicious        Boolean         @default(false)
+}
+
+model Transaction {
+  id            Int               @id @default(autoincrement())
+  utorid        String
+  type          TransactionType
+  amount        Int?
+  createdBy     String
+
+  // purchase
+  spent         Int?              @default(0)
+  earned        Int?              @default(0)
+  remark        String
+  promotionIds  Promotion[]
+  
+  // adjustment
+  relatedId     Int?
+  relatedTo     Transaction?    @relation("TransactionAdjustments", fields: [relatedId], references: [id])
+  adjustments   Transaction[]   @relation("TransactionAdjustments")
+
+  // redemption
+  suspicious    Boolean         @default(false)
+  processed     Boolean         @default(false)
+  processedBy   String?
+  redeemed      Int             @default(0)
+
+  // transfer
+  sender        String?
+  recipient     String?
+  sent          Int             @default(0)
+
+  customer      User            @relation(fields: [utorid], references: [utorid], "UserTransactions")
+  creator       User            @relation(fields: [createdBy], references: [utorid], "TransactionsMade")
+}
+
+model Promotion {
+  id                Int               @id @default(autoincrement())
+  name              String
+  description       String
+  startTime         DateTime          @default(now())
+  endTime           DateTime
+  type              PromotionType
+  minSpending       Int               @default(0)
+  points            Int               @default(0)
+  rate              Float             @default(0)
+
+  owners            User[]
+  transactionsUsed  Transaction[]
 }

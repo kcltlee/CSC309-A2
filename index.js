@@ -24,6 +24,14 @@ const app = express();
 app.use(express.json());
 
 // ADD YOUR WORK HERE
+const userRoutes = require('./routes/users'); 
+app.use('/users', userRoutes);
+
+const authRoutes = require('./routes/auth'); 
+app.use('/auth', authRoutes);
+
+const transactionRoutes = require('./routes/transactions'); 
+app.use('/transactions', transactionRoutes);
 
 
 const server = app.listen(port, () => {
