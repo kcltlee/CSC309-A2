@@ -6,6 +6,7 @@ const router = express.Router();
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { v4: uuid } = require('uuid');
 
 const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
@@ -41,7 +42,7 @@ router.route('/')
         }
 
         const { utorid, name, email } = req.body;
-        if (!utorid || !/^[a-zA-Z0-9]{8}$/.test(utorid))  {
+        if (!utorid || !/^[a-zA-Z0-9]{7,8}$/.test(utorid))  {
             return res.status(400).json({ error: "invalid utorid" });
         } else if (await prisma.user.findUnique({ where: { utorid: utorid } })) {
             return res.status(409).json({ error: "utorid already exists" });
@@ -51,9 +52,9 @@ router.route('/')
             return res.status(400).json({ error: "invalid name" });
         }
         
-        if (!email || !/^.+\..+@(?:mail\.)?utoronto\.ca$/.test(email)
-            || await prisma.user.findUnique({ where: { email } })) {
-            return res.status(400).json({ error: "invalid uoft email" });
+        // Valid UofT email: allow mail.utoronto.ca or utoronto.ca variants
+        if (!email || !/^[A-Za-z0-9._%+-]+@(?:mail\.)?utoronto\.ca$/i.test(email)) {
+           return res.status(400).json({ error: "invalid uoft email" });
         }
 
         const new_user = await prisma.user.create({
@@ -62,7 +63,8 @@ router.route('/')
                 name: name,
                 email: email,
                 expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-                promotions: { connect: promotionIds }
+                // promotions: { connect: promotionIds }
+                resetToken: uuid()
             }
         });
 
