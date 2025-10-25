@@ -1,24 +1,24 @@
 # CSC309-A2
 
 ## users
-/users, POST \
-/users, GET \
-/users/:userId, GET \
-/users/:userId, PATCH \
-/users/me, PATCH \
-/users/me, GET \
-/users/me/password, PATCH
+/users, POST jaycee \
+/users, GET jaycee \
+/users/:userId, GET jaycee \
+/users/:userId, PATCH jaycee \
+/users/me, PATCH jaycee \
+/users/me, GET jaycee \
+/users/me/password, PATCH jaycee
 
 ## auth
-/auth/tokens, POST \
-/auth/resets, POST \
-/auth/resets/:resetToken, POST
+/auth/tokens, POST jaycee \
+/auth/resets, POST jaycee \
+/auth/resets/:resetToken, POST jaycee
 
 ## transactions
-/transactions, POST \
-/transactions, GET \
-/transactions/:transactionId, GET \
-/transactions/:transactionId/suspicious, PATCH \
+/transactions, POST jaycee \
+/transactions, GET jaycee \
+/transactions/:transactionId, GET jaycee \
+/transactions/:transactionId/suspicious, PATCH jaycee \
 /users/:userId/transactions, POST \
 /users/me/transactions, POST \
 /users/me/transactions, GET \
