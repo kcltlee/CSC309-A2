@@ -33,6 +33,9 @@ app.use('/auth', authRoutes);
 const transactionRoutes = require('./routes/transactions'); 
 app.use('/transactions', transactionRoutes);
 
+const promotionRoutes = require('./routes/promotions'); 
+app.use('/promotions', promotionRoutes);
+
 
 const server = app.listen(port, () => {
     console.log(`Server running on port ${port}`);
