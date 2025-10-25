@@ -33,6 +33,9 @@ app.use('/auth', authRoutes);
 const transactionRoutes = require('./routes/transactions'); 
 app.use('/transactions', transactionRoutes);
 
+const eventRoutes = require('./routes/events'); 
+app.use('/events', eventRoutes);
+
 const promotionRoutes = require('./routes/promotions'); 
 app.use('/promotions', promotionRoutes);
 

@@ -49,6 +49,11 @@ model User {
   transactionsMade  Transaction[]   @relation("TransactionsMade")
   promotions        Promotion[]
   suspicious        Boolean         @default(false)
+
+    // events relations
+  organizedEvents   Event[]         // events this user organizes (many-to-many)
+  eventGuests       EventGuest[]    // explicit guest entries (rsvp/confirmed)
+
 }
 
 model Transaction {
@@ -97,4 +102,39 @@ model Promotion {
 
   owners            User[]
   transactionsUsed  Transaction[]
+}
+
+// event model: managers create events; organizers (many-to-many) and guests tracked via EventGuest
+model Event {
+  id             Int          @id @default(autoincrement())
+  name           String
+  description    String
+  location       String
+  startTime      DateTime
+  endTime        DateTime
+  capacity       Int?         // nullable = no limit
+  pointsRemain   Int          @default(0) // points left for organizers to distribute
+  pointsAwarded  Int          @default(0) // points already awarded to attendees
+  published      Boolean      @default(false)
+
+  // relations
+  organizers     User[]       // implicit many-to-many with user.organizedEvents
+  guests         EventGuest[] // explicit join table to track rsvp and confirmed
+
+  @@index([startTime])
+}
+
+// explicit join model for guests so we can track rsvp/confirmed and prevent awarding points to unconfirmed users
+model EventGuest {
+  id        Int    @id @default(autoincrement())
+  user      User   @relation(fields: [userId], references: [id])
+  userId    Int
+  event     Event  @relation(fields: [eventId], references: [id])
+  eventId   Int
+
+  rsvp      Boolean @default(true)
+  confirmed Boolean @default(false)
+  // additional fields (e.g. timestamp) can be added if needed
+
+  @@unique([userId, eventId])
 }
